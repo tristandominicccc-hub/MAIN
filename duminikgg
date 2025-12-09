@@ -1,0 +1,362 @@
+local LMG2L = {};
+
+LMG2L["ScreenGui_1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+LMG2L["ScreenGui_1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+
+LMG2L["Frame_2"] = Instance.new("Frame", LMG2L["ScreenGui_1"]);
+LMG2L["Frame_2"]["BorderSizePixel"] = 0;
+LMG2L["Frame_2"]["BackgroundColor3"] = Color3.fromRGB(123, 123, 123);
+LMG2L["Frame_2"]["Size"] = UDim2.new(0, 446, 0, 234);
+LMG2L["Frame_2"]["Position"] = UDim2.new(0, 132, 0, 16);
+
+LMG2L["UICorner_3"] = Instance.new("UICorner", LMG2L["Frame_2"]);
+
+-- Close button
+LMG2L["TextButton2_4"] = Instance.new("TextButton", LMG2L["Frame_2"]);
+LMG2L["TextButton2_4"]["BorderSizePixel"] = 0;
+LMG2L["TextButton2_4"]["TextSize"] = 18;
+LMG2L["TextButton2_4"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+LMG2L["TextButton2_4"]["FontFace"] = Font.new([[rbxasset://fonts/families/Inconsolata.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+LMG2L["TextButton2_4"]["Size"] = UDim2.new(0, 24, 0, 24);
+LMG2L["TextButton2_4"]["Text"] = [[X]];
+LMG2L["TextButton2_4"]["Name"] = [[TextButton2]];
+LMG2L["TextButton2_4"]["Position"] = UDim2.new(0, 414, 0, 4);
+LMG2L["UICorner_close"] = Instance.new("UICorner", LMG2L["TextButton2_4"]);
+
+-- Script URLs - FIXED: Your URLs don't exist or are incorrect
+local scriptURLs = {
+    FISHIES = "https://raw.githubusercontent.com/tristandominicccc-hub/Fishies/main/Fishies.lua",
+    ["HATCH A BIRD"] = "https://raw.githubusercontent.com/tristandominicccc-hub/duminik.gg/main/HatchABird.lua",
+    ["BUILD A FISH ARMY"] = "https://raw.githubusercontent.com/tristandominicccc-hub/duminik.gg/main/BuildaFishArmy.lua",
+    ["SHRED A FISH"] = "https://raw.githubusercontent.com/tristandominicccc-hub/duminik.gg/main/ShredAFish.lua",
+    ["CATCH AND TAME"] = "https://raw.githubusercontent.com/tristandominicccc-hub/duminik.gg/main/TameAndCatch.lua",
+    ["HOMELESS SIMULATOR"] = "https://raw.githubusercontent.com/tristandominicccc-hub/duminik.gg/main/HomelessSimulator.lua",
+    ["SURVIVE THE GODS"] = "https://raw.githubusercontent.com/tristandominicccc-hub/duminik.gg/main/SurviveTheGods.lua",
+    ["SPEAR FISHING"] = "https://raw.githubusercontent.com/tristandominicccc-hub/duminik.gg/main/SpearFishing.lua",
+    ["WORLD OF STANDS"] = "https://raw.githubusercontent.com/tristandominicccc-hub/duminik.gg/main/WorldOfStands.lua"
+}
+
+-- Currently selected script
+local currentScript = "FISHIES"
+local currentScriptURL = scriptURLs[currentScript]
+
+-- Function to execute the current script
+local function executeCurrentScript()
+    local success, errorMessage = pcall(function()
+        -- First try to get the script content
+        local scriptContent = game:HttpGet(currentScriptURL)
+        if scriptContent then
+            local loadFunc, loadError = loadstring(scriptContent)
+            if loadFunc then
+                loadFunc()
+                return true
+            else
+                error("Failed to load script: " .. tostring(loadError))
+            end
+        else
+            error("Could not retrieve script from URL")
+        end
+    end)
+    
+    if not success then
+        warn("Failed to execute script:", errorMessage)
+        -- Try alternative URL without .lua extension
+        local altURL = currentScriptURL:gsub("%.lua$", "")
+        local success2, errorMessage2 = pcall(function()
+            local scriptContent = game:HttpGet(altURL)
+            if scriptContent then
+                local loadFunc, loadError = loadstring(scriptContent)
+                if loadFunc then
+                    loadFunc()
+                    return true
+                else
+                    error("Failed to load script (alt): " .. tostring(loadError))
+                end
+            else
+                error("Could not retrieve script from alt URL")
+            end
+        end)
+        
+        if not success2 then
+            warn("Also failed with alt URL:", errorMessage2)
+        end
+    end
+    
+    return success
+end
+
+-- Function to update UI when a script is selected
+local function selectScript(scriptName)
+    currentScript = scriptName
+    currentScriptURL = scriptURLs[scriptName]
+    LMG2L["TextLabel_1e"].Text = scriptName .. " SCRIPT"
+end
+
+LMG2L["Frame2_5"] = Instance.new("Frame", LMG2L["Frame_2"]);
+LMG2L["Frame2_5"]["BorderSizePixel"] = 0;
+LMG2L["Frame2_5"]["BackgroundColor3"] = Color3.fromRGB(179, 179, 179);
+LMG2L["Frame2_5"]["Size"] = UDim2.new(0, 134, 0, 226);
+LMG2L["Frame2_5"]["Position"] = UDim2.new(0, 4, 0, 4);
+LMG2L["Frame2_5"]["Name"] = [[Frame2]];
+
+-- Create scrolling frame for script buttons
+LMG2L["ScrollingFrame"] = Instance.new("ScrollingFrame", LMG2L["Frame2_5"])
+LMG2L["ScrollingFrame"]["BorderSizePixel"] = 0
+LMG2L["ScrollingFrame"]["BackgroundColor3"] = Color3.fromRGB(179, 179, 179)
+LMG2L["ScrollingFrame"]["BackgroundTransparency"] = 1
+LMG2L["ScrollingFrame"]["Size"] = UDim2.new(0, 134, 0, 200)
+LMG2L["ScrollingFrame"]["Position"] = UDim2.new(0, 0, 0, 26)
+LMG2L["ScrollingFrame"]["ScrollBarThickness"] = 6
+LMG2L["ScrollingFrame"]["ScrollBarImageColor3"] = Color3.fromRGB(111, 111, 111)
+LMG2L["ScrollingFrame"]["CanvasSize"] = UDim2.new(0, 0, 0, 300) -- Increased for more scripts
+
+-- Script buttons positions
+local scriptButtons = {
+    {name = "FISHIES", y = 0},
+    {name = "HATCH A BIRD", y = 32},
+    {name = "BUILD A FISH ARMY", y = 64},
+    {name = "SHRED A FISH", y = 96},
+    {name = "CATCH AND TAME", y = 128},
+    {name = "HOMELESS SIMULATOR", y = 160},
+    {name = "SURVIVE THE GODS", y = 192},
+    {name = "SPEAR FISHING", y = 224},
+    {name = "WORLD OF STANDS", y = 256}
+}
+
+-- Store button references for interactivity
+local buttonReferences = {}
+
+-- Create script buttons in the scrolling frame
+for _, buttonInfo in ipairs(scriptButtons) do
+    local btn = Instance.new("TextButton", LMG2L["ScrollingFrame"])
+    btn.BorderSizePixel = 0
+    btn.TextSize = 14
+    btn.TextColor3 = Color3.fromRGB(186, 239, 255)
+    btn.BackgroundColor3 = Color3.fromRGB(111, 111, 111)
+    btn.FontFace = Font.new([[rbxasset://fonts/families/Inconsolata.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    btn.Size = UDim2.new(0, 126, 0, 28)
+    btn.Text = buttonInfo.name
+    btn.Position = UDim2.new(0, 4, 0, buttonInfo.y)
+    Instance.new("UICorner", btn)
+    
+    -- Store reference for click event
+    buttonReferences[buttonInfo.name] = btn
+end
+
+LMG2L["UICorner_a"] = Instance.new("UICorner", LMG2L["Frame2_5"]);
+
+LMG2L["TextLabel_f"] = Instance.new("TextLabel", LMG2L["Frame2_5"]);
+LMG2L["TextLabel_f"]["BorderSizePixel"] = 0;
+LMG2L["TextLabel_f"]["TextSize"] = 14;
+LMG2L["TextLabel_f"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+LMG2L["TextLabel_f"]["FontFace"] = Font.new([[rbxasset://fonts/families/Inconsolata.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+LMG2L["TextLabel_f"]["Size"] = UDim2.new(0, 122, 0, 22);
+LMG2L["TextLabel_f"]["Text"] = [[SCRIPT LIST]];
+LMG2L["TextLabel_f"]["Position"] = UDim2.new(0, 6, 0, 2);
+LMG2L["UICorner_10"] = Instance.new("UICorner", LMG2L["TextLabel_f"]);
+
+LMG2L["UIStroke_15"] = Instance.new("UIStroke", LMG2L["Frame2_5"]);
+LMG2L["UIStroke_16"] = Instance.new("UIStroke", LMG2L["Frame_2"]);
+
+LMG2L["TextLabel_18"] = Instance.new("TextLabel", LMG2L["Frame_2"]);
+LMG2L["TextLabel_18"]["BorderSizePixel"] = 0;
+LMG2L["TextLabel_18"]["TextSize"] = 12;
+LMG2L["TextLabel_18"]["BackgroundColor3"] = Color3.fromRGB(91, 91, 91);
+LMG2L["TextLabel_18"]["FontFace"] = Font.new([[rbxasset://fonts/families/Inconsolata.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+LMG2L["TextLabel_18"]["TextColor3"] = Color3.fromRGB(255, 0, 0);
+LMG2L["TextLabel_18"]["Size"] = UDim2.new(0, 90, 0, 28);
+LMG2L["TextLabel_18"]["Text"] = [[DUMINKK.GG HUB]];
+LMG2L["TextLabel_18"]["Position"] = UDim2.new(0, 242, 0, 2);
+LMG2L["UICorner_19"] = Instance.new("UICorner", LMG2L["TextLabel_18"]);
+
+LMG2L["Frame_1a"] = Instance.new("Frame", LMG2L["Frame_2"]);
+LMG2L["Frame_1a"]["BorderSizePixel"] = 0;
+LMG2L["Frame_1a"]["BackgroundColor3"] = Color3.fromRGB(179, 179, 179);
+LMG2L["Frame_1a"]["Size"] = UDim2.new(0, 298, 0, 196);
+LMG2L["Frame_1a"]["Position"] = UDim2.new(0, 142, 0, 34);
+LMG2L["UICorner_1b"] = Instance.new("UICorner", LMG2L["Frame_1a"]);
+
+-- DISCORD button
+LMG2L["TextButton2_1c"] = Instance.new("TextButton", LMG2L["Frame_1a"]);
+LMG2L["TextButton2_1c"]["BorderSizePixel"] = 0;
+LMG2L["TextButton2_1c"]["TextSize"] = 18;
+LMG2L["TextButton2_1c"]["BackgroundColor3"] = Color3.fromRGB(53, 0, 255);
+LMG2L["TextButton2_1c"]["FontFace"] = Font.new([[rbxasset://fonts/families/Inconsolata.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+LMG2L["TextButton2_1c"]["Size"] = UDim2.new(0, 150, 0, 40);
+LMG2L["TextButton2_1c"]["Text"] = [[DISCORD]];
+LMG2L["TextButton2_1c"]["Name"] = [[TextButton2]];
+LMG2L["TextButton2_1c"]["Position"] = UDim2.new(0, 134, 0, 148);
+LMG2L["UICorner_1d"] = Instance.new("UICorner", LMG2L["TextButton2_1c"]);
+
+-- Script title label
+LMG2L["TextLabel_1e"] = Instance.new("TextLabel", LMG2L["Frame_1a"]);
+LMG2L["TextLabel_1e"]["BorderSizePixel"] = 0;
+LMG2L["TextLabel_1e"]["TextSize"] = 14;
+LMG2L["TextLabel_1e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+LMG2L["TextLabel_1e"]["FontFace"] = Font.new([[rbxasset://fonts/families/Inconsolata.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+LMG2L["TextLabel_1e"]["Size"] = UDim2.new(0, 174, 0, 18);
+LMG2L["TextLabel_1e"]["Text"] = [[FISHIES SCRIPT]];
+LMG2L["TextLabel_1e"]["Position"] = UDim2.new(0, 60, 0, 4);
+LMG2L["UICorner_1f"] = Instance.new("UICorner", LMG2L["TextLabel_1e"]);
+
+LMG2L["ImageButton_20"] = Instance.new("ImageButton", LMG2L["Frame_1a"]);
+LMG2L["ImageButton_20"]["BorderSizePixel"] = 0;
+LMG2L["ImageButton_20"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+LMG2L["ImageButton_20"]["Image"] = [[rbxassetid://135954448965602]];
+LMG2L["ImageButton_20"]["Size"] = UDim2.new(0, 112, 0, 104);
+LMG2L["ImageButton_20"]["Position"] = UDim2.new(0, 6, 0, 86);
+LMG2L["UICorner_21"] = Instance.new("UICorner", LMG2L["ImageButton_20"]);
+LMG2L["UIStroke_22"] = Instance.new("UIStroke", LMG2L["ImageButton_20"]);
+
+LMG2L["TextLabel2_23"] = Instance.new("TextLabel", LMG2L["Frame_1a"]);
+LMG2L["TextLabel2_23"]["BorderSizePixel"] = 0;
+LMG2L["TextLabel2_23"]["TextSize"] = 10;
+LMG2L["TextLabel2_23"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+LMG2L["TextLabel2_23"]["FontFace"] = Font.new([[rbxasset://fonts/families/Inconsolata.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+LMG2L["TextLabel2_23"]["Size"] = UDim2.new(0, 168, 0, 34);
+LMG2L["TextLabel2_23"]["Text"] = [[JOIN MY DISCORD FOR MORE UPDATES]];
+LMG2L["TextLabel2_23"]["Name"] = [[TextLabel2]];
+LMG2L["TextLabel2_23"]["Position"] = UDim2.new(0, 124, 0, 106);
+LMG2L["UICorner_24"] = Instance.new("UICorner", LMG2L["TextLabel2_23"]);
+
+-- EXECUTE SCRIPT button
+LMG2L["TextButton_25"] = Instance.new("TextButton", LMG2L["Frame_1a"]);
+LMG2L["TextButton_25"]["BorderSizePixel"] = 0;
+LMG2L["TextButton_25"]["TextSize"] = 14;
+LMG2L["TextButton_25"]["TextColor3"] = Color3.fromRGB(0, 255, 48);
+LMG2L["TextButton_25"]["BackgroundColor3"] = Color3.fromRGB(111, 111, 111);
+LMG2L["TextButton_25"]["FontFace"] = Font.new([[rbxasset://fonts/families/Inconsolata.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+LMG2L["TextButton_25"]["Size"] = UDim2.new(0, 226, 0, 42);
+LMG2L["TextButton_25"]["Text"] = [[EXECUTE SCRIPT]];
+LMG2L["TextButton_25"]["Position"] = UDim2.new(0, 32, 0, 36);
+LMG2L["UICorner_26"] = Instance.new("UICorner", LMG2L["TextButton_25"]);
+
+LMG2L["UIStroke_27"] = Instance.new("UIStroke", LMG2L["Frame_1a"]);
+
+-- CONNECT BUTTON FUNCTIONS --
+
+-- Close button functionality
+LMG2L["TextButton2_4"].MouseButton1Click:Connect(function()
+    LMG2L["ScreenGui_1"]:Destroy()
+end)
+
+-- Discord button functionality (opens Discord invite)
+LMG2L["TextButton2_1c"].MouseButton1Click:Connect(function()
+    -- You can change this to your actual Discord invite link
+    local discordInvite = "https://discord.gg/your-invite-link"
+    if setclipboard then
+        setclipboard(discordInvite)
+        LMG2L["TextButton2_1c"].Text = "COPIED!"
+        task.wait(2)
+        LMG2L["TextButton2_1c"].Text = "DISCORD"
+    else
+        LMG2L["TextButton2_1c"].Text = "NO CLIPBOARD"
+        task.wait(2)
+        LMG2L["TextButton2_1c"].Text = "DISCORD"
+    end
+end)
+
+-- Execute Script button functionality
+LMG2L["TextButton_25"].MouseButton1Click:Connect(function()
+    LMG2L["TextButton_25"].Text = "EXECUTING..."
+    LMG2L["TextButton_25"].TextColor3 = Color3.fromRGB(255, 255, 0)
+    local success = executeCurrentScript()
+    task.wait(1)
+    
+    if success then
+        LMG2L["TextButton_25"].Text = "EXECUTED!"
+        LMG2L["TextButton_25"].TextColor3 = Color3.fromRGB(0, 255, 48)
+    else
+        LMG2L["TextButton_25"].Text = "FAILED!"
+        LMG2L["TextButton_25"].TextColor3 = Color3.fromRGB(255, 0, 0)
+    end
+    
+    task.wait(1)
+    LMG2L["TextButton_25"].Text = "EXECUTE SCRIPT"
+    LMG2L["TextButton_25"].TextColor3 = Color3.fromRGB(0, 255, 48)
+end)
+
+-- Function to handle script button clicks
+local function setupScriptButton(button, scriptName)
+    button.MouseButton1Click:Connect(function()
+        selectScript(scriptName)
+        -- Visual feedback
+        local originalColor = button.BackgroundColor3
+        button.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
+        task.wait(0.1)
+        button.BackgroundColor3 = originalColor
+    end)
+end
+
+-- Set up all script buttons
+for scriptName, button in pairs(buttonReferences) do
+    setupScriptButton(button, scriptName)
+end
+
+-- Make the GUI draggable
+local UserInputService = game:GetService("UserInputService")
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    LMG2L["Frame_2"].Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+LMG2L["Frame_2"].InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = LMG2L["Frame_2"].Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+LMG2L["Frame_2"].InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        update(input)
+    end
+end)
+
+-- Function to easily add more scripts in the future
+local function addNewScript(scriptName, scriptURL, buttonYPosition)
+    -- Add to URLs
+    scriptURLs[scriptName] = scriptURL
+    
+    -- Update scrolling frame size if needed
+    local currentCanvasSize = LMG2L["ScrollingFrame"].CanvasSize
+    if buttonYPosition + 32 > currentCanvasSize.Y.Offset then
+        LMG2L["ScrollingFrame"].CanvasSize = UDim2.new(0, 0, 0, buttonYPosition + 40)
+    end
+    
+    -- Create new button
+    local btn = Instance.new("TextButton", LMG2L["ScrollingFrame"])
+    btn.BorderSizePixel = 0
+    btn.TextSize = 14
+    btn.TextColor3 = Color3.fromRGB(186, 239, 255)
+    btn.BackgroundColor3 = Color3.fromRGB(111, 111, 111)
+    btn.FontFace = Font.new([[rbxasset://fonts/families/Inconsolata.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+    btn.Size = UDim2.new(0, 126, 0, 28)
+    btn.Text = scriptName
+    btn.Position = UDim2.new(0, 4, 0, buttonYPosition)
+    Instance.new("UICorner", btn)
+    
+    -- Store reference and set up click event
+    buttonReferences[scriptName] = btn
+    setupScriptButton(btn, scriptName)
+end
+
+return LMG2L["ScreenGui_1"]
