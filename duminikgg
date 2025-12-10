@@ -243,7 +243,7 @@ end)
 -- Discord button functionality (opens Discord invite)
 LMG2L["TextButton2_1c"].MouseButton1Click:Connect(function()
     -- You can change this to your actual Discord invite link
-    local discordInvite = "https://discord.gg/your-invite-link"
+    local discordInvite = "https://discord.gg/etJzTbNPG"
     if setclipboard then
         setclipboard(discordInvite)
         LMG2L["TextButton2_1c"].Text = "COPIED!"
